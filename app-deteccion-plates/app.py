@@ -1,6 +1,7 @@
 import streamlit as st
 import cv2
 import numpy as np
+import os
 from ultralytics import YOLO
 
 # -------------------------------
@@ -11,11 +12,17 @@ st.set_page_config(page_title="Detección de Carros", layout="wide")
 st.title("🚗 Detección de vehículos")
 
 # -------------------------------
+# Ruta del modelo (FIX IMPORTANTE)
+# -------------------------------
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "models", "best.pt")
+
+# -------------------------------
 # Cargar modelo (cacheado)
 # -------------------------------
 @st.cache_resource
 def load_model():
-    return YOLO("models/best.pt")  # ⚠️ Asegúrate que exista
+    return YOLO(MODEL_PATH)
 
 model = load_model()
 
@@ -63,7 +70,7 @@ if uploaded_file is not None:
     # -------------------------------
     with col1:
         st.subheader("📌 Detecciones")
-        st.image(annotated_image, use_container_width=True)
+        st.image(annotated_image)
 
     # -------------------------------
     # Columna 2: Recortes
@@ -98,8 +105,7 @@ if uploaded_file is not None:
 
                     st.image(
                         cropped_rgb,
-                        caption=f"Carro {i+1}",
-                        use_container_width=True
+                        caption=f"Carro {i+1}"
                     )
 
         else:
